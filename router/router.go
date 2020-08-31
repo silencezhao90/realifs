@@ -1,22 +1,12 @@
-/*
- * Author: shikanon (shikanon@tensorbytes.com)
- * File Created Time: 2020-07-21 5:52:17
- *
- * Project: editor
- * File: main.go
- * Description:
- *
- */
-package main
+package router
 
 import (
 	"fmt"
 
+	v1 "filesystem/api/v1"
+	_ "filesystem/docs"
+
 	"github.com/gin-gonic/gin"
-
-	"filesystem"
-	_ "filesystem/cmd/docs"
-
 	swaggerFiles "github.com/swaggo/files"
 	ginSwagger "github.com/swaggo/gin-swagger"
 )
@@ -66,19 +56,15 @@ const Version = "v1"
 // @authorizationUrl https://example.com/oauth/authorize
 // @scope.admin Grants read and write access to administrative information
 
-func main() {
-	router := gin.Default()
-
-	// Simple group: v1
-	v1 := router.Group(fmt.Sprintf("/filesystem/%v/", Version))
+// Load 加载路由
+func Load(g *gin.Engine) *gin.Engine {
+	routerV1 := g.Group(fmt.Sprintf("/filesystem/%v/", Version))
 	{
-		v1.POST("/upload", filesystem.Upload)
-		v1.POST("/delete", filesystem.Delete)
-		v1.POST("/copy", filesystem.Copy)
-		v1.POST("/upload_policy", filesystem.UoloadPolicy)
+		routerV1.POST("/upload", v1.Upload)
+		routerV1.POST("/delete", v1.Delete)
+		routerV1.POST("/copy", v1.Copy)
+		routerV1.POST("/upload_policy", v1.UoloadPolicy)
 	}
-	// 接口文档
-	router.GET("/swagger/*any", ginSwagger.WrapHandler(swaggerFiles.Handler))
-
-	router.Run(":8080")
+	g.GET("/swagger/*any", ginSwagger.WrapHandler(swaggerFiles.Handler))
+	return g
 }

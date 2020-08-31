@@ -11,7 +11,6 @@ import (
 	"filesystem/storage"
 	"filesystem/storage/aliyun"
 	"filesystem/storage/minio"
-	"fmt"
 
 	"github.com/spf13/viper"
 )
@@ -47,12 +46,6 @@ type MinioCofig struct {
 // LoadStorage 初始化配置
 func LoadStorage() (storage.Storage, error) {
 	// TODO: 读取配置文件，判断使用哪个云端存储，返回对应云端配置信息
-	viper.SetConfigFile("./config/config.yaml")
-	err := viper.ReadInConfig()
-	if err != nil {
-		fmt.Printf("config file error: %s\n", err)
-		return nil, err
-	}
 	c := viper.GetString("default.storage")
 	switch c {
 	case "aliyun":
@@ -63,7 +56,9 @@ func LoadStorage() (storage.Storage, error) {
 			ExternalEndpoint: viper.GetString("aliyun.externalEndpoint"),
 			InternalEndpoint: viper.GetString("aliyun.InternalEndpoint"),
 		}
-		aliStorage.Init()
+		if err := aliStorage.Init(); err != nil {
+			return &aliStorage, err
+		}
 		return &aliStorage, nil
 	case "minio":
 		minioStorage := minio.Minio{
@@ -73,7 +68,9 @@ func LoadStorage() (storage.Storage, error) {
 			Secure:          viper.GetBool("minio.secure"),
 			BucketName:      viper.GetString("minio.bucketName"),
 		}
-		minioStorage.Init()
+		if err := minioStorage.Init(); err != nil {
+			return &minioStorage, err
+		}
 		return &minioStorage, nil
 	default:
 		return nil, nil

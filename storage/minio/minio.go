@@ -25,13 +25,15 @@ type Minio struct {
 }
 
 // Init minio初始化
-func (newMinio *Minio) Init() {
+func (newMinio *Minio) Init() error {
 	fmt.Println(newMinio.Endpoint)
 	minioClient, err := minio.New(newMinio.Endpoint, newMinio.AccessKeyID, newMinio.SecretAccessKey, newMinio.Secure)
 	if err != nil {
 		fmt.Println("minio init Error:", err)
+		return err
 	}
 	newMinio.Client = minioClient
+	return nil
 }
 
 // UploadLocalFile 上传本地文件

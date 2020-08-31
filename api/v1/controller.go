@@ -5,7 +5,7 @@
  * @Last Modified time: 2020-07-27 17:29:09
  */
 
-package filesystem
+package v1
 
 import (
 	"filesystem/config"
@@ -40,8 +40,8 @@ type CopyForm struct {
 // @Description file system upload
 // @ID filesystem-upload
 // @Tags filesystem
-// @Accept  json
-// @Produce  json
+// @Accept  mpfd
+// @Produce  mpfd
 // @Param  file formData file true "file data"
 // @Param  remoteFilePath body string true "remote file path"
 // @Success 200 {string} string
@@ -72,7 +72,7 @@ func Upload(c *gin.Context) {
 	// 上传到云端
 	fsStorage, err := config.LoadStorage() // 加载存储端配置
 	if err != nil {
-		fmt.Println("Load storage error:", err)
+		httputil.NewError(c, http.StatusInternalServerError, err)
 	}
 
 	err = fsStorage.UploadLocalFile(dst, remoteFilePath)
@@ -111,7 +111,7 @@ func Delete(c *gin.Context) {
 
 	fsStorage, err := config.LoadStorage() // 加载存储端配置
 	if err != nil {
-		fmt.Println("Load storage error:", err)
+		httputil.NewError(c, http.StatusInternalServerError, err)
 	}
 	err = fsStorage.DeleteSingleFile(form.RemoteFilePath)
 	if err != nil {
@@ -150,7 +150,7 @@ func Copy(c *gin.Context) {
 
 	fsStorage, err := config.LoadStorage() // 加载存储端配置
 	if err != nil {
-		fmt.Println("Load storage error:", err)
+		httputil.NewError(c, http.StatusInternalServerError, err)
 	}
 	err = fsStorage.CopyFile(form.SrcFilePath, form.DstFilePath)
 	if err != nil {
@@ -189,9 +189,6 @@ type UploadPolicyForm struct {
 // @Router /upload_policy [post]
 func UoloadPolicy(c *gin.Context) {
 	var form UploadPolicyForm
-	// body, _ := ioutil.ReadAll(c.Request.Body)
-	// fmt.Println(string(body))
-
 	err := c.ShouldBind(&form)
 	if err != nil {
 		fmt.Println(err)
@@ -201,18 +198,14 @@ func UoloadPolicy(c *gin.Context) {
 
 	fsStorage, err := config.LoadStorage() // 加载存储端配置
 	if err != nil {
-		fmt.Println("Load storage error:", err)
+		httputil.NewError(c, http.StatusInternalServerError, err)
 	}
 	// body, _ := json.Marshal(form.CallbackBody)
 	policyString, err := fsStorage.GetUploadPolicy(form.RemoteFilePath, form.CallbackURL, form.CallbackBody)
 	if err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		httputil.NewError(c, http.StatusBadRequest, err)
 		return
 	}
 
 	c.String(http.StatusOK, policyString)
-	// c.JSON(200, gin.H{
-	// 	"message": policyString,
-	// })
 }

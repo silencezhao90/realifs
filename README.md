@@ -17,7 +17,7 @@
 * 将存储配置写入配置文件
 
 ### 配置文件说明
-配置文件位于filesystem/config/config.yaml
+配置文件位于当前目录下config.yaml
 
 **配置文件结构**
 ```yaml
@@ -38,25 +38,23 @@ minio:                  // minio配置
 default:
   storage: aliyun   // 默认使用的存储端
 ```
-### 运行测试
-**aiyun**
-```go
-go test filesystem/storage/aliyun
-```
-**minio**
-```go
-go test filesystem/storage/minio
-```
 
 ### 运行程序
 默认端口8080
 ```go
-go run cmd/filesystem/main.go
+go build -o server main.go
+```
+```go
+./server
+```
+** 可指定配置文件和端口运行 **
+```go
+./server --port=8080 --config=./config.yaml
 ```
 
 ### 生成接口文档
 ```go
-swag init -g cmd/filesystem/main.go -o cmd/filesystem/docs
+swag init -g router/router.go -o docs
 ```
 
 ## Doc

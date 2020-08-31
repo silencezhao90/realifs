@@ -35,17 +35,20 @@ type UploadPolicy struct {
 }
 
 // Init aliyun storage
-func (aliyun *Aliyun) Init() {
+func (aliyun *Aliyun) Init() error {
 	client, err := oss.New(aliyun.ExternalEndpoint, aliyun.AccessKeyID, aliyun.AccessKeySecret)
 	if err != nil {
 		fmt.Println("oss New Error:", err)
+		return err
 	}
 	aliyun.Client = client
 	bucket, err := client.Bucket(aliyun.BucketName)
 	if err != nil {
 		fmt.Println("bucket init Error:", err)
+		return err
 	}
 	aliyun.Bucket = bucket
+	return nil
 }
 
 // UploadLocalFile 上传本地文件

@@ -152,10 +152,10 @@ var doc = `{
             "post": {
                 "description": "file system upload",
                 "consumes": [
-                    "application/json"
+                    "multipart/form-data"
                 ],
                 "produces": [
-                    "application/json"
+                    "multipart/form-data"
                 ],
                 "tags": [
                     "filesystem"
