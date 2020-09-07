@@ -45,6 +45,7 @@ func initConfig() {
 	} else {
 		path, _ := os.Getwd()
 		configFile := path + "/config.yaml"
+		fmt.Println(configFile)
 		viper.SetConfigFile(configFile)
 	}
 

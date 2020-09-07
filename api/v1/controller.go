@@ -9,7 +9,6 @@ package v1
 
 import (
 	"filesystem/config"
-	"fmt"
 	"mime/multipart"
 	"net/http"
 	"os"
@@ -52,8 +51,7 @@ type CopyForm struct {
 func Upload(c *gin.Context) {
 	// 单个文件上传
 	var form UPloadForm
-	err := c.ShouldBind(&form)
-	if err != nil {
+	if err := c.ShouldBind(&form); err != nil {
 		c.String(http.StatusBadRequest, "bad request")
 		return
 	}
@@ -61,10 +59,7 @@ func Upload(c *gin.Context) {
 	remoteFilePath := c.PostForm("remoteFilePath")
 	str, _ := os.Getwd()
 	dst := str + form.File.Filename
-	err = c.SaveUploadedFile(form.File, dst)
-
-	if err != nil {
-		fmt.Println(err.Error())
+	if err := c.SaveUploadedFile(form.File, dst); err != nil {
 		c.String(http.StatusInternalServerError, "unknown error")
 		return
 	}
@@ -75,9 +70,7 @@ func Upload(c *gin.Context) {
 		httputil.NewError(c, http.StatusInternalServerError, err)
 	}
 
-	err = fsStorage.UploadLocalFile(dst, remoteFilePath)
-	if err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+	if err = fsStorage.UploadLocalFile(dst, remoteFilePath); err != nil {
 		httputil.NewError(c, http.StatusBadRequest, err)
 		return
 	}
@@ -103,8 +96,7 @@ func Upload(c *gin.Context) {
 // @Router /delete [post]
 func Delete(c *gin.Context) {
 	var form DeleteForm
-	err := c.ShouldBind(&form)
-	if err != nil {
+	if err := c.ShouldBind(&form); err != nil {
 		c.String(http.StatusBadRequest, "bad request")
 		return
 	}
@@ -113,9 +105,7 @@ func Delete(c *gin.Context) {
 	if err != nil {
 		httputil.NewError(c, http.StatusInternalServerError, err)
 	}
-	err = fsStorage.DeleteSingleFile(form.RemoteFilePath)
-	if err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+	if err = fsStorage.DeleteSingleFile(form.RemoteFilePath); err != nil {
 		httputil.NewError(c, http.StatusBadRequest, err)
 		return
 	}
@@ -142,8 +132,7 @@ func Delete(c *gin.Context) {
 // @Router /copy [post]
 func Copy(c *gin.Context) {
 	var form CopyForm
-	err := c.ShouldBind(&form)
-	if err != nil {
+	if err := c.ShouldBind(&form); err != nil {
 		c.String(http.StatusBadRequest, "bad request")
 		return
 	}
@@ -152,9 +141,7 @@ func Copy(c *gin.Context) {
 	if err != nil {
 		httputil.NewError(c, http.StatusInternalServerError, err)
 	}
-	err = fsStorage.CopyFile(form.SrcFilePath, form.DstFilePath)
-	if err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+	if err = fsStorage.CopyFile(form.SrcFilePath, form.DstFilePath); err != nil {
 		httputil.NewError(c, http.StatusBadRequest, err)
 		return
 	}
@@ -189,9 +176,7 @@ type UploadPolicyForm struct {
 // @Router /upload_policy [post]
 func UoloadPolicy(c *gin.Context) {
 	var form UploadPolicyForm
-	err := c.ShouldBind(&form)
-	if err != nil {
-		fmt.Println(err)
+	if err := c.ShouldBind(&form); err != nil {
 		c.String(http.StatusBadRequest, "bad request")
 		return
 	}

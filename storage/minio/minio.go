@@ -26,7 +26,6 @@ type Minio struct {
 
 // Init minio初始化
 func (newMinio *Minio) Init() error {
-	fmt.Println(newMinio.Endpoint)
 	minioClient, err := minio.New(newMinio.Endpoint, newMinio.AccessKeyID, newMinio.SecretAccessKey, newMinio.Secure)
 	if err != nil {
 		fmt.Println("minio init Error:", err)
@@ -68,9 +67,7 @@ func (newMinio *Minio) CopyFile(srcFileName string, destFileName string) error {
 		return err
 	}
 
-	err = newMinio.Client.CopyObject(dst, src)
-	if err != nil {
-		fmt.Println("Minio copy error:", err)
+	if err = newMinio.Client.CopyObject(dst, src); err != nil {
 		return err
 	}
 	return nil
@@ -78,12 +75,10 @@ func (newMinio *Minio) CopyFile(srcFileName string, destFileName string) error {
 
 // DeleteSingleFile 删除单个文件
 func (newMinio *Minio) DeleteSingleFile(remoteFilePath string) error {
-	err := newMinio.Client.RemoveObject(newMinio.BucketName, remoteFilePath)
-	if err != nil {
-		fmt.Println("Delete Error:", err)
+	if err := newMinio.Client.RemoveObject(newMinio.BucketName, remoteFilePath); err != nil {
 		return err
 	}
-	return err
+	return nil
 }
 
 // GetUploadPolicy 获取上传授权
