@@ -11,6 +11,7 @@ import (
 	"filesystem/storage"
 	"filesystem/storage/aliyun"
 	"filesystem/storage/minio"
+	"os"
 
 	"github.com/spf13/viper"
 )
@@ -22,11 +23,11 @@ func LoadStorage() (storage.Storage, error) {
 	switch c {
 	case "aliyun":
 		aliStorage := aliyun.Aliyun{
-			AccessKeyID:      viper.GetString("aliyun.accessKeyID"),
-			AccessKeySecret:  viper.GetString("aliyun.accessKeySecret"),
-			BucketName:       viper.GetString("aliyun.bucketName"),
-			ExternalEndpoint: viper.GetString("aliyun.externalEndpoint"),
-			InternalEndpoint: viper.GetString("aliyun.InternalEndpoint"),
+			AccessKeyID:      os.Getenv(viper.GetString("aliyun.accessKeyID")),
+			AccessKeySecret:  os.Getenv(viper.GetString("aliyun.accessKeySecret")),
+			BucketName:       os.Getenv(viper.GetString("aliyun.bucketName")),
+			ExternalEndpoint: os.Getenv(viper.GetString("aliyun.externalEndpoint")),
+			InternalEndpoint: os.Getenv(viper.GetString("aliyun.InternalEndpoint")),
 		}
 		if err := aliStorage.Init(); err != nil {
 			return &aliStorage, err

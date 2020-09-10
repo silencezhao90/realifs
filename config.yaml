@@ -1,16 +1,16 @@
 aliyun:
-  accessKeyID: ${ALI_ACEESS_KEY_ID}
-  accessKeySecret: ${ALI_ACEESS_KEY_SECRET}
-  bucketName: ${ALI_BUCKET_NAME}
-  externalEndpoint: ${ALI_EXTERNAL_ENDPOINT}
-  internalEndpoint: ${ALI_INTERNAL_ENDPOINT}
+  accessKeyID: ENV_ALI_ACEESS_KEY_ID
+  accessKeySecret: ENV_ALI_ACEESS_KEY_SECRET
+  bucketName: ENV_ALI_BUCKET_NAME
+  externalEndpoint: ENV_ALI_EXTERNAL_ENDPOINT
+  internalEndpoint: ENV_ALI_INTERNAL_ENDPOINT
 
 minio:
-  endpoint: ${MINIO_ENDPOINT}
-  accessKeyID: ${MINIO_ACCESS_KEY_ID}
-  secretAccessKey: ${MINIO_SECRET_ACCESS_KEY}
-  secure: ${MINIO_SECURE}
-  bucketName: ${MINIO_BUCKET_NAME}
+  endpoint: ENV_MINIO_ENDPOINT
+  accessKeyID: ENV_MINIO_ACCESS_KEY_ID
+  secretAccessKey: ENV_MINIO_SECRET_ACCESS_KEY
+  secure: ENV_MINIO_SECURE
+  bucketName: ENV_MINIO_BUCKET_NAME
 
 default:
   storage: aliyun
