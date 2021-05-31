@@ -11,6 +11,7 @@ import (
 	"time"
 
 	"github.com/aliyun/aliyun-oss-go-sdk/oss"
+	"github.com/spf13/viper"
 )
 
 // Aliyun struct
@@ -32,6 +33,19 @@ type UploadPolicy struct {
 	Host        string `json:"host"`
 	Key         string `json:"key"`
 	Callback    string `json:"callback"`
+}
+
+// New aliyun storage
+func New() (*Aliyun, error) {
+	storage := Aliyun{
+		AccessKeyID:      viper.GetString("aliyun.accessKeyID"),
+		AccessKeySecret:  viper.GetString("aliyun.accessKeySecret"),
+		BucketName:       viper.GetString("aliyun.bucketName"),
+		ExternalEndpoint: viper.GetString("aliyun.externalEndpoint"),
+		InternalEndpoint: viper.GetString("aliyun.InternalEndpoint"),
+	}
+	err := storage.Init()
+	return &storage, err
 }
 
 // Init aliyun storage

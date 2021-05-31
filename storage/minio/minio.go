@@ -12,6 +12,7 @@ import (
 	"os"
 
 	"github.com/minio/minio-go"
+	"github.com/spf13/viper"
 )
 
 // Minio struct
@@ -22,6 +23,19 @@ type Minio struct {
 	Secure          bool   // true代表使用HTTPS
 	BucketName      string
 	Client          *minio.Client
+}
+
+// New minio storage
+func New() (*Minio, error) {
+	storage := Minio{
+		Endpoint:        viper.GetString("minio.endpoint"),
+		AccessKeyID:     viper.GetString("minio.accessKeyID"),
+		SecretAccessKey: viper.GetString("minio.secretAccessKey"),
+		Secure:          viper.GetBool("minio.secure"),
+		BucketName:      viper.GetString("minio.bucketName"),
+	}
+	err := storage.Init()
+	return &storage, err
 }
 
 // Init minio初始化

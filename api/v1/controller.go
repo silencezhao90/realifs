@@ -8,7 +8,7 @@
 package v1
 
 import (
-	"filesystem/config"
+	"filesystem/storage"
 	"mime/multipart"
 	"net/http"
 	"os"
@@ -64,13 +64,7 @@ func Upload(c *gin.Context) {
 		return
 	}
 
-	// 上传到云端
-	fsStorage, err := config.LoadStorage() // 加载存储端配置
-	if err != nil {
-		httputil.NewError(c, http.StatusInternalServerError, err)
-	}
-
-	if err = fsStorage.UploadLocalFile(dst, remoteFilePath); err != nil {
+	if err := storage.FS.UploadLocalFile(dst, remoteFilePath); err != nil {
 		httputil.NewError(c, http.StatusBadRequest, err)
 		return
 	}
@@ -101,11 +95,7 @@ func Delete(c *gin.Context) {
 		return
 	}
 
-	fsStorage, err := config.LoadStorage() // 加载存储端配置
-	if err != nil {
-		httputil.NewError(c, http.StatusInternalServerError, err)
-	}
-	if err = fsStorage.DeleteSingleFile(form.RemoteFilePath); err != nil {
+	if err := storage.FS.DeleteSingleFile(form.RemoteFilePath); err != nil {
 		httputil.NewError(c, http.StatusBadRequest, err)
 		return
 	}
@@ -137,11 +127,7 @@ func Copy(c *gin.Context) {
 		return
 	}
 
-	fsStorage, err := config.LoadStorage() // 加载存储端配置
-	if err != nil {
-		httputil.NewError(c, http.StatusInternalServerError, err)
-	}
-	if err = fsStorage.CopyFile(form.SrcFilePath, form.DstFilePath); err != nil {
+	if err := storage.FS.CopyFile(form.SrcFilePath, form.DstFilePath); err != nil {
 		httputil.NewError(c, http.StatusBadRequest, err)
 		return
 	}
@@ -181,12 +167,8 @@ func UoloadPolicy(c *gin.Context) {
 		return
 	}
 
-	fsStorage, err := config.LoadStorage() // 加载存储端配置
-	if err != nil {
-		httputil.NewError(c, http.StatusInternalServerError, err)
-	}
 	// body, _ := json.Marshal(form.CallbackBody)
-	policyString, err := fsStorage.GetUploadPolicy(form.RemoteFilePath, form.CallbackURL, form.CallbackBody)
+	policyString, err := storage.FS.GetUploadPolicy(form.RemoteFilePath, form.CallbackURL, form.CallbackBody)
 	if err != nil {
 		httputil.NewError(c, http.StatusBadRequest, err)
 		return

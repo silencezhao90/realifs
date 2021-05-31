@@ -1,12 +1,11 @@
 package router
 
 import (
-	"fmt"
-
 	v1 "filesystem/api/v1"
 	_ "filesystem/docs"
 
 	"github.com/gin-gonic/gin"
+	"github.com/spf13/viper"
 	swaggerFiles "github.com/swaggo/files"
 	ginSwagger "github.com/swaggo/gin-swagger"
 )
@@ -58,7 +57,8 @@ const Version = "v1"
 
 // Load 加载路由
 func Load(g *gin.Engine) *gin.Engine {
-	routerV1 := g.Group(fmt.Sprintf("/filesystem/%v/", Version))
+	prefixPath := viper.GetString("prefix_path")
+	routerV1 := g.Group(prefixPath + "/" + Version)
 	{
 		routerV1.POST("/upload", v1.Upload)
 		routerV1.POST("/delete", v1.Delete)
